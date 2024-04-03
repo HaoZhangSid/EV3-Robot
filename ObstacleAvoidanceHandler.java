@@ -30,7 +30,7 @@ public class ObstacleAvoidanceHandler implements Runnable {
             }
 
             try {
-                Thread.sleep(50); // 检查频率
+                Thread.sleep(10); // 检查频率
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
