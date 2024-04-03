@@ -5,9 +5,10 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class SharedControl {
-private volatile String robotState = "forward";
+//private volatile String robotState = "forward";
 private final Lock stateLock = new ReentrantLock();
-
+private volatile String robotState = "forward";
+private volatile float motorSpeed;
  public String getRobotState() {
      stateLock.lock();
      try {
@@ -16,7 +17,13 @@ private final Lock stateLock = new ReentrantLock();
          stateLock.unlock();
      }
  }
+ public synchronized float getMotorSpeed() {
+     return motorSpeed;
+ }
 
+ public synchronized void setMotorSpeed(double speed) {
+     this.motorSpeed = (float) speed;
+ }
  public void setRobotState(String state) {
      stateLock.lock();
      try {
