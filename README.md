@@ -30,7 +30,7 @@ This project aims to develop an intelligent robot based on LEGO Mindstorms EV3, 
 
 [Java for Lego Mindstorms](https://lejos.sourceforge.io/)
 
-[lejos | Programming the EV3 platform with Java | STEMRobotics](https://stemrobotics.cs.pdx.edu/node/4576.html)
+[Programming the EV3 platform with Java, Some basic examples](https://stemrobotics.cs.pdx.edu/node/4576.html)
 
 
 
