@@ -1,7 +1,7 @@
-// ObstacleAvoidanceHandler.java
 package ev3.exercises;
 
 import ev3.exercises.library.UltraSonicSensor;
+import ev3.exercises.library.ColorSensor;
 import ev3.exercises.library.Lcd;
 import lejos.hardware.port.SensorPort;
 
@@ -10,10 +10,15 @@ public class ObstacleAvoidanceHandler implements Runnable {
     private SharedControl sharedControl;
     private volatile boolean running = true;
     private final float DISTANCE_THRESHOLD = 0.2f; // 障碍物检测阈值，单位为米
-
+    private ColorSensor colorSensor; // ColorSensor声明为成员变量
+    private long firstObstacleDetectionTime; // 记录第一次检测到障碍物的时间
+    private boolean obstacleDetected = false; // 标记是否已检测到障碍物
+    private boolean stopRobot = false; // 标记是否停止机器人
+    
     public ObstacleAvoidanceHandler(SharedControl sharedControl) {
         this.ultrasonicSensor = new UltraSonicSensor(SensorPort.S2); // 假设超声波传感器连接在S2端口
         this.sharedControl = sharedControl;
+        this.colorSensor = new ColorSensor(SensorPort.S4); // 实例化ColorSensor对象
     }
 
     @Override
@@ -25,40 +30,64 @@ public class ObstacleAvoidanceHandler implements Runnable {
 
             // 如果检测到障碍物
             if (distance < DISTANCE_THRESHOLD) {
-                // 执行避障动作
-                avoidObstacle();
+                if (!obstacleDetected) {
+                    // 第一次检测到障碍物
+                    firstObstacleDetectionTime = System.currentTimeMillis();
+                    obstacleDetected = true;
+                    avoidObstacle();
+                } else {
+                    // 第二次检测到障碍物
+                    long currentTime = System.currentTimeMillis(); // 获取当前时间
+                    long elapsedTime = currentTime - firstObstacleDetectionTime; // 计算与第一次检测到障碍物的时间间隔
+                    stopRobot = true; // 标记停止机器人
+                    displayTimeSinceLastObstacle(elapsedTime); // 显示时间间隔信息
+                }
+            } 
+
+            // 如果标志为true，则停止机器人
+            if (stopRobot) {
+                synchronized (this) {
+                    sharedControl.setRobotState("stop");
+                    running = false;
+                }
             }
 
             try {
-                Thread.sleep(10); // 检查频率
+                Thread.sleep(50); // 检查频率
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private void avoidObstacle() {
-    	// 设置正在避障状态
+    private void displayTimeSinceLastObstacle(long elapsedTime) {
+        Lcd.clear(7);
+        Lcd.print(7, "Time: %d s", elapsedTime/1000); // 在LCD上显示时间间隔
+    }
+    
+    private void avoidObstacle() {   
+        // 设置正在避障状态
         sharedControl.setAvoidingObstacle(true);
-        // 停止机器人
-    	sharedControl.setRobotState("stop");
-        wait(3000); // 等待半秒
-
-        // 向右转一定角度
+        // 机器人转向 turnRight 转45度 需1000ms 速度180
         sharedControl.setRobotState("turnRight");
-        wait(3000); // 假设转动需要的时间
-
-        // 向前移动一段距离
-        sharedControl.setRobotState("forward");
-        wait(1000); // 假设移动需要的时间
-
-        // 向左转一定角度，完成半圆绕行
+        wait(1000);           
+        
+        
+        //前进L=21.21cm,用时2.7s
+        sharedControl.setRobotState("forwardLine");
+        wait(2700);
+        
+        // 机器人转向 turnLeft 转90度 需2000ms 速度180
         sharedControl.setRobotState("turnLeft");
-        wait(1000); // 假设转动需要的时间
-
-        // 继续前进直到找到黑线
-        sharedControl.setRobotState("forward");
-        // 避障完成后，重置避障状态
+        wait(2000);
+          
+        while (true) {
+            sharedControl.setRobotState("forwardLine");
+            if (colorSensor.getRed() < 0.2) {
+                // 当颜色传感器检测到的红色值大于0.2时，机器人退出              
+                break;
+            } 
+        }
         sharedControl.setAvoidingObstacle(false);
     }
 

@@ -9,7 +9,7 @@ import ev3.exercises.library.Lcd;
 
 public class LightSensorHandler implements Runnable {
 
-    private EV3ColorSensor colorSensor;
+    static EV3ColorSensor colorSensor;
     private SharedControl sharedControl;
     private volatile boolean running = true;
     private volatile boolean paused = false;

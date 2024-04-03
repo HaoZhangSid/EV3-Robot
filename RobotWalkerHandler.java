@@ -40,6 +40,12 @@ public class RobotWalkerHandler implements Runnable {
                         Lcd.clear(1);
                         Lcd.print(1, "PID: %.2f", sum);
                         break;
+                    case "turnLeft":
+                    	RobotWalker.turnLeft(RobotWalker.DEFAULT_SPEED);
+                        break;
+                    case "turnRight":
+                        RobotWalker.turnRight(RobotWalker.DEFAULT_SPEED);
+                        break;
                     default:
 
                 }

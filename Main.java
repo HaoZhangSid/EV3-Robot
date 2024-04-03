@@ -26,10 +26,10 @@ public class Main {
         Thread walkerThread = new Thread(walkerHandler);
         walkerThread.start();
 
-//        // 初始化超声波传感器和避障处理器
-//        ObstacleAvoidanceHandler obstacleAvoidanceHandler = new ObstacleAvoidanceHandler(sharedControl);
-//        Thread obstacleAvoidanceThread = new Thread(obstacleAvoidanceHandler);
-//        obstacleAvoidanceThread.start();
+        // 初始化超声波传感器和避障处理器
+        ObstacleAvoidanceHandler obstacleAvoidanceHandler = new ObstacleAvoidanceHandler(sharedControl);
+        Thread obstacleAvoidanceThread = new Thread(obstacleAvoidanceHandler);
+        obstacleAvoidanceThread.start();
 
         // 等待退出信号
         Button.waitForAnyPress();
@@ -37,7 +37,7 @@ public class Main {
         // 停止所有线程并关闭资源
         lightSensorHandler.stopRunning();
         walkerHandler.stopRunning();
-//        obstacleAvoidanceHandler.stopRunning();
+        obstacleAvoidanceHandler.stopRunning();
         RobotWalker.close(); // 关闭电机资源
     }
 }
