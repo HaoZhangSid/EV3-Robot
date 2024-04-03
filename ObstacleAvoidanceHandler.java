@@ -9,8 +9,7 @@ public class ObstacleAvoidanceHandler implements Runnable {
     private UltraSonicSensor ultrasonicSensor;
     private SharedControl sharedControl;
     private volatile boolean running = true;
-    private final float DISTANCE_THRESHOLD = 0.2f; // 障碍物检测阈值，单位为米
-    private ColorSensor colorSensor; // ColorSensor声明为成员变量
+    private final float DISTANCE_THRESHOLD = 0.2f; // 障碍物检测阈值，单位为米   
     private long firstObstacleDetectionTime; // 记录第一次检测到障碍物的时间
     private boolean obstacleDetected = false; // 标记是否已检测到障碍物
     private boolean stopRobot = false; // 标记是否停止机器人
@@ -18,7 +17,7 @@ public class ObstacleAvoidanceHandler implements Runnable {
     public ObstacleAvoidanceHandler(SharedControl sharedControl) {
         this.ultrasonicSensor = new UltraSonicSensor(SensorPort.S2); // 假设超声波传感器连接在S2端口
         this.sharedControl = sharedControl;
-        this.colorSensor = new ColorSensor(SensorPort.S4); // 实例化ColorSensor对象
+      
     }
 
     @Override
@@ -83,7 +82,7 @@ public class ObstacleAvoidanceHandler implements Runnable {
           
         while (true) {
             sharedControl.setRobotState("forwardLine");
-            if (colorSensor.getRed() < 0.2) {
+            if (sharedControl.getRedValue() < 0.2) {
                 // 当颜色传感器检测到的红色值大于0.2时，机器人退出              
                 break;
             } 
