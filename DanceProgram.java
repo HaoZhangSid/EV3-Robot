@@ -1,8 +1,6 @@
 package ev3.exercises;
 
-import lejos.hardware.motor.Motor;
 import lejos.robotics.RegulatedMotor;
-import lejos.utility.Delay;
 
 public class DanceProgram implements Runnable {
     private RegulatedMotor leftMotor;
