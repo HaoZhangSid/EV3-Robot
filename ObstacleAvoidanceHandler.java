@@ -4,12 +4,13 @@ import ev3.exercises.library.UltraSonicSensor;
 import ev3.exercises.library.ColorSensor;
 import ev3.exercises.library.Lcd;
 import lejos.hardware.port.SensorPort;
+import lejos.hardware.Sound;
 
 public class ObstacleAvoidanceHandler implements Runnable {
     private UltraSonicSensor ultrasonicSensor;
     private SharedControl sharedControl;
     private volatile boolean running = true;
-    private final float DISTANCE_THRESHOLD = 0.2f; // 障碍物检测阈值，单位为米   
+    private final float DISTANCE_THRESHOLD = 0.1f; // 障碍物检测阈值，单位为米   
     private long firstObstacleDetectionTime; // 记录第一次检测到障碍物的时间
     private boolean obstacleDetected = false; // 标记是否已检测到障碍物
     private boolean stopRobot = false; // 标记是否停止机器人
@@ -56,6 +57,7 @@ public class ObstacleAvoidanceHandler implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            wait(5);
         }
     }
 
@@ -70,24 +72,35 @@ public class ObstacleAvoidanceHandler implements Runnable {
         // 机器人转向 turnRight 转45度 需1000ms 速度180
         sharedControl.setRobotState("turnRight");
         wait(1000);           
-        
-        
+                
         //前进L=21.21cm,用时2.7s
         sharedControl.setRobotState("forwardLine");
-        wait(2700);
+        wait(2000);
         
         // 机器人转向 turnLeft 转90度 需2000ms 速度180
         sharedControl.setRobotState("turnLeft");
-        wait(2000);
-          
-        while (true) {
-            sharedControl.setRobotState("forwardLine");
-            if (sharedControl.getRedValue() < 0.2) {
-                // 当颜色传感器检测到的红色值大于0.2时，机器人退出              
-                break;
-            } 
+        wait(1500);
+        
+        boolean keepLine = true;
+        while (keepLine) {
+        	sharedControl.setRobotState("forwardLine");
+            float redValue = sharedControl.getRedValue();
+            Lcd.clear();
+            Lcd.print(1, "Red Value: %.2f", redValue);
+           
+            if (redValue < 0.2) {
+                // 当颜色传感器检测到的红色值小于0.2时，机器人退出避障  
+            	Sound.systemSound(true, Sound.BEEP); 
+                keepLine = false;
+//                break;
+                
+            }
+            wait(10);
         }
+        
         sharedControl.setAvoidingObstacle(false);
+        sharedControl.setRobotState("forward");
+//        Sound.systemSound(true, Sound.BEEP);   
     }
 
     private void wait(int milliseconds) {
