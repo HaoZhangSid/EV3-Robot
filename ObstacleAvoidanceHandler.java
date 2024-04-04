@@ -41,6 +41,7 @@ public class ObstacleAvoidanceHandler implements Runnable {
                     long elapsedTime = currentTime - firstObstacleDetectionTime; // 计算与第一次检测到障碍物的时间间隔
                     stopRobot = true; // 标记停止机器人
                     displayTimeSinceLastObstacle(elapsedTime); // 显示时间间隔信息
+                    
                 }
             } 
 
@@ -91,16 +92,13 @@ public class ObstacleAvoidanceHandler implements Runnable {
             if (redValue < 0.2) {
                 // 当颜色传感器检测到的红色值小于0.2时，机器人退出避障  
             	Sound.systemSound(true, Sound.BEEP); 
-                keepLine = false;
-//                break;
-                
+                keepLine = false;                
             }
             wait(10);
         }
         
         sharedControl.setAvoidingObstacle(false);
-        sharedControl.setRobotState("forward");
-//        Sound.systemSound(true, Sound.BEEP);   
+        sharedControl.setRobotState("forward"); 
     }
 
     private void wait(int milliseconds) {

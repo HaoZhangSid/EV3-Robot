@@ -65,10 +65,12 @@ public class LightSensorHandler implements Runnable {
         float[] colorArr = new float[redMode.sampleSize()]; // 创建一个数组，用于存储传感器读数
 
         while (running) {
+            // 更新颜色传感器模式为红光模式，并读取样本
+            redMode.fetchSample(colorArr, 0);
+        	sharedControl.setRedValue(colorArr[0]); 
             if (!paused && !sharedControl.isAvoidingObstacle()) {
-                // 更新颜色传感器模式为红光模式，并读取样本
-                redMode.fetchSample(colorArr, 0);
-                sharedControl.setRedValue(colorArr[0]); 
+
+                
 
                 // 计算当前反射光强度
                 double reflectedLight = (double) colorArr[0] * 100;
