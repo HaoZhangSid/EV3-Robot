@@ -68,6 +68,7 @@ public class LightSensorHandler implements Runnable {
             if (!paused && !sharedControl.isAvoidingObstacle()) {
                 // 更新颜色传感器模式为红光模式，并读取样本
                 redMode.fetchSample(colorArr, 0);
+                sharedControl.setRedValue(colorArr[0]); 
 
                 // 计算当前反射光强度
                 double reflectedLight = (double) colorArr[0] * 100;
@@ -97,11 +98,11 @@ public class LightSensorHandler implements Runnable {
 
                 // 在LCD上显示反射光强度和PID输出
                 Lcd.clear(10);
-                Lcd.print(2, "Red: %.2f", reflectedLight);
+                Lcd.print(2, "Red: %.2f", colorArr[0]);
             }
 
             try {
-                Thread.sleep(0);
+                Thread.sleep(5);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

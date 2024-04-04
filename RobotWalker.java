@@ -14,7 +14,7 @@ public class RobotWalker {
 //	    motorB = new EV3LargeRegulatedMotor(MotorPort.B); // 右电机连接到端口B
 //	    motorA = new EV3LargeRegulatedMotor(MotorPort.C); // 左电机连接到端口C
 
-    static final int DEFAULT_SPEED = 200; // Typical speed range is 0-900 deg/sec
+    static final int DEFAULT_SPEED = 180; // Typical speed range is 0-900 deg/sec
  // setMotorsSpeed方法用于设置左右电机的速度
     public static void setMotorsSpeed(float _motorASpeed, float _motorBSpeed) {
         // 根据传入的速度值设置电机运动方向和速度
@@ -50,6 +50,13 @@ public class RobotWalker {
     }
     
     public static void forward(int speed) {
+        motorA.setSpeed(speed);
+        motorB.setSpeed(speed);
+        motorA.forward();
+        motorB.forward();
+    }
+    
+    public static void forwardLine(int speed) {
         motorA.setSpeed(speed);
         motorB.setSpeed(speed);
         motorA.forward();

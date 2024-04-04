@@ -9,6 +9,7 @@ public class SharedControl {
 private final Lock stateLock = new ReentrantLock();
 private volatile String robotState = "forward";
 private volatile float motorSpeed;
+private volatile float redValue;
  public String getRobotState() {
      stateLock.lock();
      try {
@@ -52,4 +53,10 @@ private volatile float motorSpeed;
          stateLock.unlock();
      }
  }
+public float getRedValue() {
+	return redValue;
+}
+public void setRedValue(float redValue) {
+    this.redValue = redValue;
+}
 }

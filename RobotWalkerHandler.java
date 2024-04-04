@@ -40,13 +40,22 @@ public class RobotWalkerHandler implements Runnable {
                         Lcd.clear(1);
                         Lcd.print(1, "PID: %.2f", sum);
                         break;
+                    case "turnLeft":
+                    	RobotWalker.turnLeft(RobotWalker.DEFAULT_SPEED);
+                        break;
+                    case "turnRight":
+                        RobotWalker.turnRight(RobotWalker.DEFAULT_SPEED);
+                        break;
+                    case "forwardLine":
+                        RobotWalker.forwardLine(RobotWalker.DEFAULT_SPEED);
+                        break;    
                     default:
 
                 }
             }
 
             try {
-                Thread.sleep(0); // 控制检查频率
+                Thread.sleep(5); // 控制检查频率
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
