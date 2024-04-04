@@ -28,6 +28,8 @@ public class RobotWalkerHandler implements Runnable {
                 switch (state) {
                     case "stop":
                         RobotWalker.stop(); // 使用存储的 RobotWalker 对象
+                        RobotWalker.close();
+                        stopRunning();
                         break;
                     case "forward":
                         // 获取PID控制器的输出值

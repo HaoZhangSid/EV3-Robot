@@ -1,10 +1,11 @@
 package ev3.exercises;
 
 import ev3.exercises.library.UltraSonicSensor;
-import ev3.exercises.library.ColorSensor;
 import ev3.exercises.library.Lcd;
 import lejos.hardware.port.SensorPort;
+import lejos.robotics.RegulatedMotor;
 import lejos.hardware.Sound;
+import lejos.hardware.motor.Motor;
 
 public class ObstacleAvoidanceHandler implements Runnable {
     private UltraSonicSensor ultrasonicSensor;
@@ -49,6 +50,38 @@ public class ObstacleAvoidanceHandler implements Runnable {
                 synchronized (this) {
                     sharedControl.setRobotState("stop");
                     running = false;
+                    Sound.systemSound(true, Sound.BEEP); 
+                    wait(100);
+                    Sound.systemSound(true, Sound.BEEP); 
+                    
+                    RegulatedMotor leftMotor = Motor.C; // 左电机
+                    RegulatedMotor rightMotor = Motor.B; // 右电机
+                    // 定义音符频率
+                    int[] notes = {1568, 1760, 1976, 2093, 1760, 2093, 2200, 2330, 1976, 2093,
+                                   1568, 1760, 1976, 2093, 1760, 2093, 2200, 2330, 1976, 2093};
+
+                    // 定义音符持续时间（毫秒）
+                    int[] durations = {200, 200, 200, 200, 200, 200, 400, 400, 200, 200,
+                                       200, 200, 200, 200, 200, 200, 400, 400, 200, 200}; // 对应音符的持续时间
+
+                    // 创建音乐播放和舞蹈程序执行的线程
+                    Thread musicThread = new Thread(new MusicPlayer(notes, durations));
+                    Thread danceThread = new Thread(new DanceProgram(leftMotor, rightMotor));
+
+                    // 启动线程
+                    musicThread.start();
+                    danceThread.start();
+                    try {
+                        // 等待两个线程执行完成
+                        musicThread.join();
+                        danceThread.join();
+                        // 关闭电机
+                        leftMotor.close();
+                        rightMotor.close();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    
                 }
             }
 
