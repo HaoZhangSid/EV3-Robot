@@ -15,11 +15,11 @@ public class MusicPlayer implements Runnable {
     @Override
     public void run() {
         for (int i = 0; i < notes.length; i++) {
-            if (i == notes.length - 1) { // 如果是最后一个音符
-                durations[i] = 500; // 最后一个音符持续时间稍长一些
+            if (i == notes.length - 1) { // If it's the last note
+                durations[i] = 500; // Extend the duration of the last note slightly
             }
             Sound.playTone(notes[i], durations[i]);
-            Delay.msDelay(durations[i] + 20); // 等待音符结束
+            Delay.msDelay(durations[i] + 20); // Wait for the note to finish
         }
     }
 }

@@ -16,14 +16,14 @@ public class DanceProgram implements Runnable {
         for (int i = 0; i < 4; i++) {
             leftMotor.forward();
             rightMotor.backward();
-            sleep(1000); // 等待1秒钟
+            sleep(1000); // Wait for 1 second
             leftMotor.backward();
             rightMotor.forward();
-            sleep(1000); // 等待1秒钟
+            sleep(1000); // Wait for 1 second
         }
     }
 
-    // 等待一段时间的辅助方法
+    // Helper method to wait for a specified amount of time
     private void sleep(long millis) {
         try {
             Thread.sleep(millis);

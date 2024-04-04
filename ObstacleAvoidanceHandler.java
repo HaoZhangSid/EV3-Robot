@@ -1,3 +1,4 @@
+//ObstacleAvoidanceHandler.java
 package ev3.exercises;
 
 import ev3.exercises.library.UltraSonicSensor;
@@ -11,13 +12,13 @@ public class ObstacleAvoidanceHandler implements Runnable {
     private UltraSonicSensor ultrasonicSensor;
     private SharedControl sharedControl;
     private volatile boolean running = true;
-    private final float DISTANCE_THRESHOLD = 0.1f; // 障碍物检测阈值，单位为米   
-    private long firstObstacleDetectionTime; // 记录第一次检测到障碍物的时间
-    private boolean obstacleDetected = false; // 标记是否已检测到障碍物
-    private boolean stopRobot = false; // 标记是否停止机器人
+    private final float DISTANCE_THRESHOLD = 0.1f; // Obstacle detection threshold, unit: meters
+    private long firstObstacleDetectionTime; // Record the time when the first obstacle is detected
+    private boolean obstacleDetected = false; // Flag indicating whether an obstacle is detected
+    private boolean stopRobot = false; // Flag indicating whether to stop the robot
     
     public ObstacleAvoidanceHandler(SharedControl sharedControl) {
-        this.ultrasonicSensor = new UltraSonicSensor(SensorPort.S2); // 假设超声波传感器连接在S2端口
+        this.ultrasonicSensor = new UltraSonicSensor(SensorPort.S2); // Assume ultrasonic sensor is connected to port S2
         this.sharedControl = sharedControl;
       
     }
@@ -27,25 +28,25 @@ public class ObstacleAvoidanceHandler implements Runnable {
         while (running) {
             float distance = ultrasonicSensor.getRange();
             Lcd.clear(6);
-            Lcd.print(6, "Distance: %.2f m", distance); // 在LCD上实时显示距离值
+            Lcd.print(6, "Distance: %.2f m", distance); // Display distance value in real-time on LCD
 
-            // 如果检测到障碍物
+            // If an obstacle is detected
             if (distance < DISTANCE_THRESHOLD) {
                 if (!obstacleDetected) {
-                    // 第一次检测到障碍物
+                    // First time detecting an obstacle
                     firstObstacleDetectionTime = System.currentTimeMillis();
                     obstacleDetected = true;
                     avoidObstacle();
                 } else {
-                    // 第二次检测到障碍物
-                    long currentTime = System.currentTimeMillis(); // 获取当前时间
-                    long elapsedTime = currentTime - firstObstacleDetectionTime; // 计算与第一次检测到障碍物的时间间隔
-                    stopRobot = true; // 标记停止机器人
-                    displayTimeSinceLastObstacle(elapsedTime); // 显示时间间隔信息
+                    // Second time detecting an obstacle
+                    long currentTime = System.currentTimeMillis(); // Get current time
+                    long elapsedTime = currentTime - firstObstacleDetectionTime; // Calculate time interval since first obstacle detection
+                    stopRobot = true; // Flag to stop the robot
+                    displayTimeSinceLastObstacle(elapsedTime); // Display time interval information
                 }
             } 
 
-            // 如果标志为true，则停止机器人
+            // If stopRobot flag is true, stop the robot
             if (stopRobot) {
                 synchronized (this) {
                     sharedControl.setRobotState("stop");
@@ -54,28 +55,28 @@ public class ObstacleAvoidanceHandler implements Runnable {
                     wait(100);
                     Sound.systemSound(true, Sound.BEEP); 
                     
-                    RegulatedMotor leftMotor = Motor.C; // 左电机
-                    RegulatedMotor rightMotor = Motor.B; // 右电机
-                    // 定义音符频率
+                    RegulatedMotor leftMotor = Motor.C; // Left motor
+                    RegulatedMotor rightMotor = Motor.B; // Right motor
+                    // Define musical notes frequency
                     int[] notes = {1568, 1760, 1976, 2093, 1760, 2093, 2200, 2330, 1976, 2093,
                                    1568, 1760, 1976, 2093, 1760, 2093, 2200, 2330, 1976, 2093};
 
-                    // 定义音符持续时间（毫秒）
+                    // Define duration of musical notes (milliseconds)
                     int[] durations = {200, 200, 200, 200, 200, 200, 400, 400, 200, 200,
-                                       200, 200, 200, 200, 200, 200, 400, 400, 200, 200}; // 对应音符的持续时间
+                                       200, 200, 200, 200, 200, 200, 400, 400, 200, 200}; // Duration corresponding to each note
 
-                    // 创建音乐播放和舞蹈程序执行的线程
+                    // Create threads for music playback and dance program execution
                     Thread musicThread = new Thread(new MusicPlayer(notes, durations));
                     Thread danceThread = new Thread(new DanceProgram(leftMotor, rightMotor));
 
-                    // 启动线程
+                    // Start threads
                     musicThread.start();
                     danceThread.start();
                     try {
-                        // 等待两个线程执行完成
+                        // Wait for both threads to finish execution
                         musicThread.join();
                         danceThread.join();
-                        // 关闭电机
+                        // Close motors
                         leftMotor.close();
                         rightMotor.close();
                     } catch (InterruptedException e) {
@@ -86,7 +87,7 @@ public class ObstacleAvoidanceHandler implements Runnable {
             }
 
             try {
-                Thread.sleep(50); // 检查频率
+                Thread.sleep(50); // Check frequency
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -96,44 +97,41 @@ public class ObstacleAvoidanceHandler implements Runnable {
 
     private void displayTimeSinceLastObstacle(long elapsedTime) {
         Lcd.clear(7);
-        Lcd.print(7, "Time: %d s", elapsedTime/1000); // 在LCD上显示时间间隔
+        Lcd.print(7, "Time: %d s", elapsedTime/1000); // Display time interval on LCD
     }
     
     private void avoidObstacle() {   
-        // 设置正在避障状态
+        // Set avoiding obstacle state
         sharedControl.setAvoidingObstacle(true);
-        // 机器人转向 turnRight 转45度 需1000ms 速度180
+        // Robot turns right by 45 degrees, takes 1000ms, speed 180
         sharedControl.setRobotState("turnRight");
         wait(1000);           
                 
-        //前进L=21.21cm,用时2.7s
+        // Forward L=21.21cm, takes 2.7s
         sharedControl.setRobotState("forwardLine");
         wait(2000);
         
-        // 机器人转向 turnLeft 转90度 需2000ms 速度180
+        // Robot turns left by 90 degrees, takes 2000ms, speed 180
         sharedControl.setRobotState("turnLeft");
         wait(1500);
         
         boolean keepLine = true;
         while (keepLine) {
-        	sharedControl.setRobotState("forwardLine");
+            sharedControl.setRobotState("forwardLine");
             float redValue = sharedControl.getRedValue();
             Lcd.clear();
             Lcd.print(1, "Red Value: %.2f", redValue);
            
             if (redValue < 0.2) {
-                // 当颜色传感器检测到的红色值小于0.2时，机器人退出避障  
-            	Sound.systemSound(true, Sound.BEEP); 
+                // When red value detected by color sensor is less than 0.2, robot exits obstacle avoidance
+                Sound.systemSound(true, Sound.BEEP); 
                 keepLine = false;
-//                break;
-                
             }
             wait(10);
         }
         
         sharedControl.setAvoidingObstacle(false);
         sharedControl.setRobotState("forward");
-//        Sound.systemSound(true, Sound.BEEP);   
     }
 
     private void wait(int milliseconds) {
