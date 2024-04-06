@@ -7,6 +7,13 @@ import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.SensorMode;
 import ev3.exercises.library.Lcd;
 
+
+/**
+ * Handles the operations related to the light sensor, including measuring reflection
+ * intensity and implementing a PID controller for following a line. This class is designed
+ * to continuously adjust the robot's movement based on the light sensor readings to follow
+ * a line on the ground.
+ */
 public class LightSensorHandler implements Runnable {
 
     private EV3ColorSensor colorSensor;
@@ -26,6 +33,13 @@ public class LightSensorHandler implements Runnable {
     private double sum = 0; // Control value
     private double speedFactor = 1.0;
 
+    /**
+     * Constructs a new LightSensorHandler with a shared control object. It initializes
+     * the color sensor and calculates the target reflection intensity value by measuring
+     * the reflection of a black line and a white area.
+     *
+     * @param sharedControl The shared control object used for managing robot state.
+     */
     public LightSensorHandler(SharedControl sharedControl) {
         this.sharedControl = sharedControl;
         this.colorSensor = new EV3ColorSensor(SensorPort.S4); // Color sensor connected to port S4
@@ -57,6 +71,10 @@ public class LightSensorHandler implements Runnable {
         Button.waitForAnyPress();
     }
 
+    /**
+     * The main run method that implements the PID control loop for line following.
+     * It adjusts the robot's speed based on the light sensor readings to follow a line.
+     */
     @Override
     public void run() {
 //        Lcd.clear();
@@ -115,6 +133,9 @@ public class LightSensorHandler implements Runnable {
         }
     }
 
+    /**
+     * Stops the PID control loop and terminates the thread.
+     */
     public void stopRunning() {
         running = false;
         paused = false; // Reset pause state when stopping

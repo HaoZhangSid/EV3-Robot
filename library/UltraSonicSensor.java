@@ -6,6 +6,7 @@ import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.RangeFinder;
 import lejos.robotics.SampleProvider;
 
+
 public class UltraSonicSensor implements RangeFinder
 {
 	EV3UltrasonicSensor sensor;

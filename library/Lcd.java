@@ -3,7 +3,8 @@ package ev3.exercises.library;
 import lejos.hardware.Brick;
 import lejos.hardware.BrickFinder;
 import lejos.hardware.lcd.Font;
-import lejos.hardware.lcd.TextLCD;;
+import lejos.hardware.lcd.TextLCD;
+
 
 public class Lcd
 {
