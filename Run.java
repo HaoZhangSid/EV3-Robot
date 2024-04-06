@@ -3,6 +3,14 @@ package ev3.exercises;
 
 import lejos.hardware.Button;
 
+/**
+ * The main class for running the robot application. This class initializes and starts the threads for
+ * handling light sensor input, robot walking behavior, and obstacle avoidance. It sets up a shared control
+ * resource to coordinate actions between different parts of the application.
+ *
+ * <p>After initializing the necessary handlers for the robot's sensors and movement, it waits for a button press
+ * to terminate the application and stop all running threads, ensuring a graceful shutdown and resource cleanup.</p>
+ */
 public class Run {
     public static void main(String[] args) {
         // Create shared control resource

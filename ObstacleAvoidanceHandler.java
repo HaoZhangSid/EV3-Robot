@@ -8,21 +8,52 @@ import lejos.robotics.RegulatedMotor;
 import lejos.hardware.Sound;
 import lejos.hardware.motor.Motor;
 
+/**
+ * Handles obstacle detection and avoidance for a robot using an ultrasonic sensor.
+ * When an obstacle is detected within a predefined threshold, the robot executes
+ * a predefined avoidance maneuver and optionally performs additional actions like stopping the robot,
+ * playing a sound, or executing a dance routine.
+ */
 public class ObstacleAvoidanceHandler implements Runnable {
+	/** The ultrasonic sensor used to detect obstacles. */
     private UltraSonicSensor ultrasonicSensor;
+    
+    /** Shared control object for managing the robot's state and behavior. */
     private SharedControl sharedControl;
+    
+    /** Flag to control the main loop execution. */
     private volatile boolean running = true;
+    
+    /** Distance threshold for obstacle detection in meters. */
     private final float DISTANCE_THRESHOLD = 0.1f; // Obstacle detection threshold, unit: meters
+    
+    /** Timestamp of the first obstacle detection, used for timing related decisions. */
     private long firstObstacleDetectionTime; // Record the time when the first obstacle is detected
+    
+    /** Flag indicating if an obstacle has been detected. */
     private boolean obstacleDetected = false; // Flag indicating whether an obstacle is detected
+    
+    /** Flag indicating if the robot should be stopped due to an obstacle. */
     private boolean stopRobot = false; // Flag indicating whether to stop the robot
     
+    
+    /**
+     * Constructs an ObstacleAvoidanceHandler with a shared control for robot management.
+     * Initializes the ultrasonic sensor on a specific port.
+     *
+     * @param sharedControl The shared control object used for coordinating robot actions.
+     */
     public ObstacleAvoidanceHandler(SharedControl sharedControl) {
         this.ultrasonicSensor = new UltraSonicSensor(SensorPort.S2); // Assume ultrasonic sensor is connected to port S2
         this.sharedControl = sharedControl;
       
     }
 
+    /**
+     * Main method to detect and handle obstacles. Monitors the distance to potential obstacles
+     * and initiates avoidance maneuvers if necessary. Can also stop the robot and perform
+     * additional actions like playing sounds or executing a dance routine upon encountering obstacles.
+     */
     @Override
     public void run() {
         while (running) {
@@ -95,11 +126,20 @@ public class ObstacleAvoidanceHandler implements Runnable {
         }
     }
 
+    /**
+     * Displays the elapsed time since the last obstacle was detected.
+     *
+     * @param elapsedTime The time elapsed since the last obstacle detection in milliseconds.
+     */
     private void displayTimeSinceLastObstacle(long elapsedTime) {
         Lcd.clear(7);
         Lcd.print(7, "Time: %d s", elapsedTime/1000); // Display time interval on LCD
     }
     
+    /**
+     * Initiates an avoidance maneuver when an obstacle is detected. The specific sequence of actions
+     * can include turning, moving forward, and adjusting the robot's path based on sensor inputs.
+     */
     private void avoidObstacle() {   
         // Set avoiding obstacle state
         sharedControl.setAvoidingObstacle(true);
@@ -134,6 +174,12 @@ public class ObstacleAvoidanceHandler implements Runnable {
         sharedControl.setRobotState("forward");
     }
 
+    
+    /**
+     * Utility method to pause execution for a specified number of milliseconds.
+     *
+     * @param milliseconds The amount of time to pause in milliseconds.
+     */
     private void wait(int milliseconds) {
         try {
             Thread.sleep(milliseconds);
@@ -142,6 +188,10 @@ public class ObstacleAvoidanceHandler implements Runnable {
         }
     }
 
+
+    /**
+     * Stops the obstacle detection and handling loop.
+     */
     public void stopRunning() {
         running = false;
     }
