@@ -6,6 +6,16 @@
 This project aims to develop an intelligent robot based on LEGO Mindstorms EV3, focusing on efficient path following and automatic obstacle avoidance capabilities. By utilizing EV3 sensors and programming skills, this robot can autonomously navigate in various environments, recognizing paths and avoiding obstacles ahead.
 
 
+## Group Members 
+
+**Han Zhang:** Leader,  Route Tracking Function 
+
+**Aijun Fan:** Obstacle Avoidance Function
+
+**Mengyun Li:** Music Player 
+
+**Yilin Lai:** Document Editing
+
 
 ## Feature
 - **Path Following Ability**: Utilizes bottom sensors to recognize and follow predetermined paths, capable of adapting to different colors and complexities of the path.
