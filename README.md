@@ -2,7 +2,7 @@
 > https://github.com/HaoZhangSid/EV3-Robot
 
 ## Introduction
-This project aims to develop an intelligent robot based on LEGO Mindstorms EV3, focusing on efficient path following and automatic obstacle avoidance capabilities. By utilizing EV3 sensors and programming skills, this robot can autonomously navigate in various environments, recognizing paths and avoiding obstacles ahead.
+This project aims to develop an intelligent robot based on LEGO Mindstorms EV3, focusing on efficient path following and automatic obstacle avoidance capabilities. By utilizing EV3 sensors and programming skills, this robot can autonomously navigate in various environments, recognizing paths and avoiding obstacles ahead！
 
 
 
