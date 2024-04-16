@@ -6,6 +6,7 @@ import lejos.robotics.RegulatedMotor;
  * Represents a dance program for a robot, making it perform a simple dance routine.
  * This program makes the robot execute a sequence of movements where it alternates
  * between moving forward with one motor and backward with the other, creating a dance effect.
+ * Change a new music for the robot.
  */
 public class DanceProgram implements Runnable {
     /** The motor attached to the left side of the robot. */
