@@ -7,6 +7,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * Manages shared control and state information for the robot. This class provides synchronized access
  * to shared robot states such as the current movement state, motor speed, and sensor values. It uses
  * locking to ensure thread-safe modifications and access to these shared states.
+ *i will add a new update
  */
 public class SharedControl {
 	/** Lock for managing state changes in a thread-safe manner. */
