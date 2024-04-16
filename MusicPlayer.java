@@ -12,6 +12,9 @@ import lejos.utility.Delay;
 public class MusicPlayer implements Runnable {
     /** Array of musical note frequencies (in Hz) to be played. */
     private int[] notes;
+
+
+    
     /** Array of durations (in milliseconds) for each note to be played. */
     private int[] durations;
 
