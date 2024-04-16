@@ -10,7 +10,7 @@ import lejos.hardware.port.MotorPort;
  * This includes basic movements such as forward, backward, turn left, turn right,
  * and more complex actions like setting specific speeds for each motor or rotating
  * the robot by a specified angle. The class is designed for robots using two EV3
- * large regulated motors.
+ * large regulated motors. ok!
  */
 public class RobotWalker {
     
