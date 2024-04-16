@@ -1,4 +1,9 @@
-README.md @YILIN1031
-DanceProgram.java @meng-yuan-li
-MusicPlayer.java @meng-yuan-li
-ObstacleAvoidanceHandler.java @aijunfan
+/README.md @YILIN1031
+/Run.java @YILIN1031
+/DanceProgram.java @meng-yuan-li
+/MusicPlayer.java @meng-yuan-li
+/LightSensorHandler.java @HaoZhangSid
+/RobotWalker.java @HaoZhangSid
+/RobotWalkerHandler.java @HaoZhangSid
+/ObstacleAvoidanceHandler.java @aijunfan
+/SharedControl.java @aijunfan
