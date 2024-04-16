@@ -9,7 +9,7 @@ This project aims to develop an intelligent robot based on LEGO Mindstorms EV3, 
 
 ## Group Members 
 
-**Han Zhang - Leader/Developer:** ,  Route Tracking Function, Tracking Optimization
+**Han Zhang - Leader/Developer:** ,  Route Tracking Function, Tracking Optimization.
 
 **Aijun Fan - Developer:** Obstacle Avoidance Function, Turn Strategy Design
 
