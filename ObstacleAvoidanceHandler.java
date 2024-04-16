@@ -13,6 +13,7 @@ import lejos.hardware.motor.Motor;
  * When an obstacle is detected within a predefined threshold, the robot executes
  * a predefined avoidance maneuver and optionally performs additional actions like stopping the robot,
  * playing a sound, or executing a dance routine.
+ * 1234
  */
 public class ObstacleAvoidanceHandler implements Runnable {
 	/** The ultrasonic sensor used to detect obstacles. */
