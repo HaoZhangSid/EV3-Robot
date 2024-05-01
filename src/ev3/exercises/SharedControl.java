@@ -21,6 +21,113 @@ public class SharedControl {
     
     /** The current value read from the red color sensor. */
     private volatile float redValue;
+    
+    
+    
+    // New variables to store action, speed, proportional, integral, derivative
+    private volatile int action;
+    private volatile int speed;
+    private volatile double proportional;
+    private volatile double integral;
+    private volatile double derivative;
+    
+   
+
+    // Methods to set and get action
+    public void setAction(int action) {
+        stateLock.lock();
+        try {
+            this.action = action;
+        } finally {
+            stateLock.unlock();
+        }
+    }
+
+    public int getAction() {
+        stateLock.lock();
+        try {
+            return action;
+        } finally {
+            stateLock.unlock();
+        }
+    }
+
+    // Methods to set and get speed
+    public synchronized void setSpeed(int speed) {
+        stateLock.lock();
+        try {
+            this.speed = speed;
+        } finally {
+            stateLock.unlock();
+        }
+    }
+
+    public synchronized int getSpeed() {
+        stateLock.lock();
+        try {
+            return speed;
+        } finally {
+            stateLock.unlock();
+        }
+    }
+
+    // Methods to set and get proportional
+    public void setProportional(double proportional) {
+        stateLock.lock();
+        try {
+            this.proportional = proportional;
+        } finally {
+            stateLock.unlock();
+        }
+    }
+
+    public double getProportional() {
+        stateLock.lock();
+        try {
+            return proportional;
+        } finally {
+            stateLock.unlock();
+        }
+    }
+
+    // Methods to set and get integral
+    public void setIntegral(double integral) {
+        stateLock.lock();
+        try {
+            this.integral = integral;
+        } finally {
+            stateLock.unlock();
+        }
+    }
+
+    public double getIntegral() {
+        stateLock.lock();
+        try {
+            return integral;
+        } finally {
+            stateLock.unlock();
+        }
+    }
+
+    // Methods to set and get derivative
+    public void setDerivative(double derivative) {
+        stateLock.lock();
+        try {
+            this.derivative = derivative;
+        } finally {
+            stateLock.unlock();
+        }
+    }
+
+    public double getDerivative() {
+        stateLock.lock();
+        try {
+            return derivative;
+        } finally {
+            stateLock.unlock();
+        }
+    }
+    
 
     /**
      * Retrieves the current state of the robot.

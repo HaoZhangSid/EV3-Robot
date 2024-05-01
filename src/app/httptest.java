@@ -1,72 +1,98 @@
 package app;
 
-
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.URL;
-import java.sql.Date;
-import java.sql.Time;
-import java.util.Calendar;
-import java.util.Enumeration;
-
-//import javax.ws.rs.client.Client;
-//import javax.ws.rs.client.ClientBuilder;
-//import javax.ws.rs.client.Entity;
-//import javax.ws.rs.client.Invocation.Builder;
-//import javax.ws.rs.client.WebTarget;
-//import javax.ws.rs.core.MediaType;
-
 import lejos.hardware.Button;
-import lejos.hardware.Sound;
-//import runnables.*;
-public class httptest {
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.InputStream;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import ev3.exercises.SharedControl;
 
-	public static void main(String[] args) {
-		
-        System.out.println("Read some text from URL\n");
-        System.out.println("Press any key to start");
-        
-        Button.waitForAnyPress();
+public class httptest implements Runnable {
 
-        URL url = null;
-  		HttpURLConnection conn = null;
-  		InputStreamReader isr = null;
-  		BufferedReader br=null;
+    private volatile boolean running = true;
+    private SharedControl sharedControl;
 
-  		String s=null;
-		try {
-			url = new URL("http://192.168.32.224:8080/rest/lego/getspeed");
-			conn = (HttpURLConnection)url.openConnection();
-  			System.out.println(conn.toString()); //Tulostaa vain URLin
-			InputStream is=null;
-			try {
-				is=conn.getInputStream();
-			}
-			catch (Exception e) {
-	  			System.out.println("Exception conn.getInputSteam()");
-	  			e.printStackTrace();
-	            System.out.println("Cannot get InputStream!");
-			}
-			isr = new InputStreamReader(is);
-      		br=new BufferedReader(isr);
-			while ((s=br.readLine())!=null){
-				System.out.println(s);
-			}
-		}
-  		catch(Exception e) {
-  			e.printStackTrace();
+    public httptest(SharedControl sharedControl) {
+        this.sharedControl = sharedControl;
+    }
+
+    @Override
+    public void run() {
+        while (running) {
+            try {
+                // Execute httptest
+                getDataFromAPI();
+                // Wait for 2 seconds
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                running = false;
+            }
+        }
+    }
+
+    private void getDataFromAPI() {
+        HttpURLConnection conn = null;
+        InputStreamReader isr = null;
+        BufferedReader br = null;
+
+        try {
+            URL url = new URL("http://192.168.32.224:8080/rest/lego/getlego");
+            conn = (HttpURLConnection) url.openConnection();
+            InputStream is = conn.getInputStream();
+            isr = new InputStreamReader(is);
+            br = new BufferedReader(isr);
+
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+
+            String jsonData = sb.toString();
+
+            // Parse JSON data
+            Gson gson = new Gson();
+            JsonObject jsonObject = JsonParser.parseString(jsonData).getAsJsonObject();
+            JsonArray legoSettingArray = jsonObject.getAsJsonArray("legoSetting");
+            JsonObject legoSettingObject = legoSettingArray.get(0).getAsJsonObject(); // Assuming there is only one object in the array
+
+            // Extract data and store in variables
+            int action = legoSettingObject.get("action").getAsInt();
+            int speed = legoSettingObject.get("speed").getAsInt();
+            double proportional = legoSettingObject.get("proportional").getAsDouble();
+            double integral = legoSettingObject.get("integral").getAsDouble();
+            double derivative = legoSettingObject.get("derivative").getAsDouble();
+
+            // Set the extracted data in the shared control instance
+            sharedControl.setAction(action);
+            sharedControl.setSpeed(speed);
+            sharedControl.setProportional(proportional);
+            sharedControl.setIntegral(integral);
+            sharedControl.setDerivative(derivative);
+
+        } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("Some problem!");
-  		}
-        System.out.println("Press any key to FINISH");
-        Button.waitForAnyPress();
-	}
-
+        } finally {
+            try {
+                if (br != null) {
+                    br.close();
+                }
+                if (isr != null) {
+                    isr.close();
+                }
+                if (conn != null) {
+                    conn.disconnect();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

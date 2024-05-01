@@ -23,16 +23,16 @@ public class LightSensorHandler implements Runnable {
     private volatile boolean paused = false;
 
     // Parameters for PID controller
-    private double Kp = 18; // Proportional coefficient 
-    private double Ki = 0.001; // Integral coefficient 0.00005 0.000002 0
-    private double Kd = 18; // Derivative coefficient 15
+    private double Kp = 18 ; // Proportional coefficient  18 
+    private double Ki = 0.001; // Integral coefficient 0.00005 0.000002 0.001
+    private double Kd = 18; // Derivative coefficient 15 18
     private int target; // Target reflection intensity value
     private double Derivative = 0; // Derivative term
     private double Integral = 0; // Integral term
     private double Lasterror = 0; // Last error
     private double Error = 0; // Current error
     private double sum = 0; // Control value
-    private double speedFactor = 1.0;
+    private double speedFactor = 1;
 
     /**
      * Constructs a new LightSensorHandler with a shared control object. It initializes
@@ -65,10 +65,15 @@ public class LightSensorHandler implements Runnable {
 
         // Calculate target value
         target = (blackValue + whiteValue) / 2;
-//        target = 20; 
+
+        // Initialize PID parameters
+        Kp = sharedControl.getProportional();
+        Ki = sharedControl.getIntegral();
+        Kd = sharedControl.getDerivative();
         Lcd.clear();
         Lcd.print(1, "B,W,T: " + blackValue + "," + whiteValue + "," + target);
         Lcd.print(2, "Press ENTER to start");
+        Lcd.clear();
         Button.waitForAnyPress();
     }
 
@@ -84,6 +89,10 @@ public class LightSensorHandler implements Runnable {
         
 
         while (running) {
+            Kp = sharedControl.getProportional();
+            Ki = sharedControl.getIntegral();
+            Kd = sharedControl.getDerivative();
+            speedFactor = sharedControl.getSpeed();
              // Update color sensor mode to red light mode and fetch sample
             redMode.fetchSample(colorArr, 0);
             sharedControl.setRedValue(colorArr[0]); 
@@ -103,7 +112,6 @@ public class LightSensorHandler implements Runnable {
 
                 // Multiply control value by speed factor
                 sum *= speedFactor;
-
                 // Adjust motor speed according to control value
                 if (sum > 0) {
                     sum /= 2000;
@@ -117,8 +125,10 @@ public class LightSensorHandler implements Runnable {
                 sharedControl.setMotorSpeed(sum);
 
                 // Display reflection intensity and PID output on LCD
-                Lcd.clear(10);
-                Lcd.print(2, "Red: %.2f", colorArr[0]);
+//                Lcd.clear(10);
+//                Lcd.print(2, "Red: %.2f", colorArr[0]);
+                Lcd.clear(2); // 清除 LCD 的第 3 行
+                Lcd.print(2, "Speed: %.2f", speedFactor); // 在 LCD 的第 3 行上显示速度值
             }
 
             try {
